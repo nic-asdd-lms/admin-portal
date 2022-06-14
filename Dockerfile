@@ -1,12 +1,11 @@
-#Stage 1: Build
-FROM node:alpine AS build
-WORKDIR /usr/src/app
-COPY package.json package-lock.json ./
+FROM node:alpine
+
+RUN npm install -g @angular/cli
+WORKDIR /app
+COPY package.json .
 RUN npm install
 COPY . .
-RUN npm run build
 
-#Stage 2: Run
-FROM nginx:alpine
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY --from=build /usr/src/app/dist/admin-portal /usr/share/nginx/html
+EXPOSE 4200
+
+CMD ["ng", "serve", "--host", "0.0.0.0", "--disable-host-check"]
